@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    container_name: taskmanager-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=fares
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - db
+    networks:
+      - taskmanager-network
+
+  db:
+    image: postgres:latest
+    restart: always
+    shm_size: 128mb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: fares
+    networks:
+      - taskmanager-network
+
+networks:
+  taskmanager-network:
+    driver: bridge
