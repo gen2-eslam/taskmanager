@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.taskmanager.domain.entities.TaskList;
 import com.example.taskmanager.domain.dto.ResponseDto;
 import com.example.taskmanager.domain.dto.TaskListDto;
-import com.example.taskmanager.domain.dto.TaskRequestDto;
+import com.example.taskmanager.domain.dto.TaskListRequestDto;
 import com.example.taskmanager.mappers.TaskListMapper;
 import com.example.taskmanager.services.TaskListService;
 
 @RestController
 @RequestMapping("/task-lists")
 public class TaskListController {
-
+    
     private final TaskListService taskListService;
     private final TaskListMapper taskListMapper;
 
@@ -47,8 +47,8 @@ public class TaskListController {
                         .toList());
     }
 
-    @PostMapping
-    public ResponseDto<TaskListDto> createTaskList(@RequestBody TaskRequestDto taskRequest) {
+    @PostMapping("/create-task-list")
+    public ResponseDto<TaskListDto> createTaskList(@RequestBody TaskListRequestDto taskRequest) {
         TaskList createdTaskList = taskListService.createTaskList(taskRequest.title(), taskRequest.description());
         return new ResponseDto<TaskListDto>(
                 "Task list created successfully",
@@ -67,7 +67,7 @@ public class TaskListController {
 
     @PutMapping("/update-task-list")
     public ResponseDto<TaskListDto> updateTaskList(@RequestParam("task_list_id") UUID taskListId,
-            @RequestBody TaskRequestDto taskRequest) {
+            @RequestBody TaskListRequestDto taskRequest) {
         TaskList updatedTaskList = taskListService.updateTaskList(taskListId, taskRequest.title(),
                 taskRequest.description());
         return new ResponseDto<TaskListDto>(
