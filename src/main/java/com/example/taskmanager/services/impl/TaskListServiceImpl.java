@@ -44,6 +44,32 @@ public class TaskListServiceImpl implements TaskListService {
 
     @Override
     public Optional<TaskList> getTaskListById(UUID id) {
-        return taskListRepository.findById(id);
+        Optional<TaskList> taskList = taskListRepository.findById(id);
+        if (taskList.isEmpty()) {
+            throw new IllegalArgumentException("Task List not found!");
+        }
+        return taskList;
+    }
+
+    @Override
+    public TaskList updateTaskList(UUID id, String title, String description) {
+        Optional<TaskList> taskList = taskListRepository.findById(id);
+        if (taskList.isEmpty()) {
+            throw new IllegalArgumentException("Task List not found!");
+        }
+
+        taskList.get().setTitle(title);
+        taskList.get().setDescription(description);
+        taskList.get().setUpdatedAt(LocalDateTime.now());
+        return taskListRepository.save(taskList.get());
+    }
+
+    @Override
+    public void deleteTaskList(UUID id) {
+        Optional<TaskList> taskList = taskListRepository.findById(id);
+        if (taskList.isEmpty()) {
+            throw new IllegalArgumentException("Task List not found!");
+        }
+        taskListRepository.deleteById(id);
     }
 }
