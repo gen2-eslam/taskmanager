@@ -27,7 +27,33 @@ docker-compose up --build
 
 The application will be available at `http://localhost:8080`.
 
-### 2. Local Development
+### 2. Run with Pre-built Image
+To run the application using the image from Docker Hub without building from source:
+
+1.  **Create a Network:**
+    ```bash
+    docker network create taskmanager-network
+    ```
+
+2.  **Start the Database:**
+    ```bash
+    docker run -d --name db \
+      --network taskmanager-network \
+      -e POSTGRES_PASSWORD=fares \
+      postgres:latest
+    ```
+
+3.  **Start the Application:**
+    ```bash
+    docker run -p 8080:8080 \
+      --network taskmanager-network \
+      -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres \
+      -e SPRING_DATASOURCE_USERNAME=postgres \
+      -e SPRING_DATASOURCE_PASSWORD=fares \
+      geneslam123/taskmanager-app
+    ```
+
+### 3. Local Development
 If you prefer to run the application locally without Docker for the app itself:
 
 1.  **Start the Database:**
