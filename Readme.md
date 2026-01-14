@@ -16,62 +16,82 @@ Before running the application, ensure you have the following installed:
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (includes Docker Compose)
 - [Maven](https://maven.apache.org/) (optional, wrapper included)
 
-## Getting Started
+## Installation & Setup
 
-### 1. Run with Docker (Recommended)
-The easiest way to run the application is using Docker Compose, which sets up both the application and the PostgreSQL database.
+### Quick Start with Docker Compose (Recommended)
 
+The simplest way to run the application is using Docker Compose. This automatically sets up both the Spring Boot application and PostgreSQL database with a single command.
+
+**Prerequisites:**
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed
+
+**Steps:**
+
+1. **Clone the repository** (if you haven't already):
+   ```bash
+   git clone <repository-url>
+   cd taskmanager
+   ```
+
+2. **Run with Docker Compose:**
+   ```bash
+   docker-compose up
+   ```
+
+   This will:
+   - Pull the pre-built application image from Docker Hub (`geneslam123/taskmanager`)
+   - Start a PostgreSQL database container
+   - Automatically connect the application to the database
+
+3. **Access the application:**
+   - Application: `http://localhost:8080`
+   - Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+
+**To stop the application:**
 ```bash
-docker-compose up --build
+docker-compose down
 ```
 
-The application will be available at `http://localhost:8080`.
+### Alternative: Build from Source
 
-### 2. Run with Pre-built Image
-To run the application using the image from Docker Hub without building from source:
+If you want to build the Docker image locally instead of using the pre-built image:
 
-1.  **Create a Network:**
-    ```bash
-    docker network create taskmanager-network
-    ```
+1. **Uncomment the build line** in `docker-compose.yml`:
+   ```yaml
+   spring_boot_app:
+     container_name: taskmanager
+     build: .  # Uncomment this line
+     # image: geneslam123/taskmanager  # Comment out this line
+   ```
 
-2.  **Start the Database:**
-    ```bash
-    docker run -d --name db \
-      --network taskmanager-network \
-      -e POSTGRES_PASSWORD=fares \
-      postgres:latest
-    ```
+2. **Run with build:**
+   ```bash
+   docker-compose up --build
+   ```
 
-3.  **Start the Application:**
-    ```bash
-    docker run -p 8080:8080 \
-      --network taskmanager-network \
-      -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres \
-      -e SPRING_DATASOURCE_USERNAME=postgres \
-      -e SPRING_DATASOURCE_PASSWORD=fares \
-      geneslam123/taskmanager-app
-    ```
+### Local Development Setup
 
-### 3. Local Development
-If you prefer to run the application locally without Docker for the app itself:
+For local development without Docker:
 
-1.  **Start the Database:**
-    You still need a PostgreSQL database. You can use Docker for just the DB:
-    ```bash
-    docker-compose up db -d
-    ```
+1. **Start PostgreSQL** (using Docker):
+   ```bash
+   docker-compose up postgres -d
+   ```
 
-2.  **Run the Application:**
-    Use the Maven wrapper to start the Spring Boot application:
-    ```bash
-    ./mvnw spring-boot:run
-    ```
+2. **Update database connection** in `src/main/resources/application.properties`:
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+   ```
+
+3. **Run the application:**
+   ```bash
+   ./mvnw spring-boot:run
+   ```
 
 ## API Documentation
 The application provides interactive API documentation via Swagger UI.
 
-- **Swagger UI:** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- **Swagger UI:** [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
 - **OpenAPI Json:** [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 
 ### Main Resources

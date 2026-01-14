@@ -1,10 +1,7 @@
+version: '3.8'
+
 services:
-  app:
-    build: .
-    ports:
-      - "8080:8081"
-    networks:
-      - taskmanager-network
+
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -13,14 +10,21 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
-      - taskmanagersql:/var/lib/postgresql
-    networks:
-      - taskmanager-network
-networks:
-  taskmanager-network:
-    driver: bridge
+      - postgresql:/var/lib/postgresql
+  spring_boot_app:
+    container_name: taskmanager
+    #build: .
+    image: geneslam123/taskmanager
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+
+
+
 
 volumes:
-  taskmanagersql:
+  postgresql:
