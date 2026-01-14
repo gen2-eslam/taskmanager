@@ -52,6 +52,38 @@ The simplest way to run the application is using Docker Compose. This automatica
 docker-compose down
 ```
 
+**Docker Compose Configuration:**
+
+The `docker-compose.yml` file contains the following configuration:
+
+```yaml
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: fares
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql:/var/lib/postgresql
+  spring_boot_app:
+    container_name: taskmanager
+    image: geneslam123/taskmanager
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgresql:
+```
+
 ### Alternative: Build from Source
 
 If you want to build the Docker image locally instead of using the pre-built image:
